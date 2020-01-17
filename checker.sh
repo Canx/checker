@@ -22,11 +22,7 @@ self_update() {
         git pull --force
         git checkout "$BRANCH"
         git pull --force
-        logger "$SCRIPTFILE Ejecutando nueva version..."
         cd -                                   # return to original working dir
-        exec "$SCRIPTNAME" "${ARGS[@]}"
-
-        exit 1
     }
     logger "Ya es la última versión."
 }
@@ -71,7 +67,7 @@ check_xprintidle
 if [ $SCRIPTPATH != "/usr/local/bin/checker" ]; then 
    logger "$SCRIPTFILE Instalando script..."
    cp -r $SCRIPTPATH /usr/local/bin/
-   chown root:root -R /usr/local/bin/checker # intentar averiguar el directorio "checker"
+   chown root:root -R /usr/local/bin/checker
    logger "$SCRIPTFILE Instalando cron..."
    echo "*/1 * * * *    root    /usr/local/bin/checker/$SCRIPTFILE" >> /tmp/$CRONFILE
    mv /tmp/$CRONFILE /etc/cron.d/
@@ -80,9 +76,9 @@ else
    # Check update script
    if [ ! -f "/tmp/checker.log" ]; then
        self_update
+       touch /tmp/checker.log
+       exit 1
    fi
-   # Update script only the first time it runs
-   touch /tmp/checker.log
 fi
 
 
