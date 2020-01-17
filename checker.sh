@@ -30,9 +30,17 @@ self_update() {
 check_xprintidle() {
    if [ $(dpkg-query -W -f='${Status}' xprintidle 2>/dev/null | grep -c "ok installed") -eq 0 ];
    then
-      apt-get install xprintidle;
+      apt-get --assume-yes install xprintidle;
    fi
 }
+
+check_git() {
+   if [ $(dpkg-query -W -f='${Status}' git 2>/dev/null | grep -c "ok installed") -eq 0 ];
+   then
+      apt-get --assume-yes install git;
+   fi
+}
+
 
 get_displays() {
     declare -A disps usrs
@@ -60,8 +68,7 @@ get_displays() {
 
 
 check_xprintidle
-
-# TODO: check_git
+check_git
 
 # Install script and cron if we are not in installation path
 if [ $SCRIPTPATH != "/usr/local/bin/checker" ]; then 
