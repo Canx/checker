@@ -67,14 +67,13 @@ check_xprintidle
 
 
 if [ $SCRIPTPATH != "/usr/local/bin/checker/" ]; then 
-   mkdir /usr/local/bin/checker
-   cp $SCRIPTPATH/ /usr/local/bin/checker/$SCRIPTFILE
-   chown root:root -R /usr/local/bin/checker
+   cp -r $SCRIPTPATH /usr/local/bin/
+   chown root:root -R /usr/local/bin/checker # intentar averiguar el directorio "checker"
 fi
 
 get_displays
 
-if [ ! -f "/etc/cron.d/$SCRIPTFILE ]; then
+if [ ! -f "/etc/cron.d/$SCRIPTFILE" ]; then
    #echo "SHELL=/bin/bash" > /tmp/$SCRIPTFILE
    echo "*/1 * * * *    root    /usr/local/bin/checker/$SCRIPTFILE" >> /tmp/$SCRIPTFILE
    mv /tmp/$SCRIPTFILE /etc/cron.d/
