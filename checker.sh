@@ -69,20 +69,19 @@ touch /tmp/checker.log
 
 check_xprintidle
 
+# Install script and cron if is not in installation path
 if [ $SCRIPTPATH != "/usr/local/bin/checker" ]; then 
    echo "Instalando script..."
    cp -r $SCRIPTPATH /usr/local/bin/
    chown root:root -R /usr/local/bin/checker # intentar averiguar el directorio "checker"
-fi
-
-get_displays
-
-if [ ! -f "/etc/cron.d/$SCRIPTFILE" ]; then
    echo "Instalando cron..."
    echo "*/1 * * * *    root    /usr/local/bin/checker/$SCRIPTFILE" >> /tmp/$SCRIPTFILE
    mv /tmp/$SCRIPTFILE /etc/cron.d/
    chown root:root /etc/cron.d/$SCRIPTFILE
 fi
+
+# Empezamos el script
+get_displays
 
 idletime=$((60*1000*$minutos))
 
