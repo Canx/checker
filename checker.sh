@@ -31,5 +31,20 @@ self_update() {
     }
     echo "Already the latest version."
 }
+
+install_packages() {
+    PKG_OK=$(dpkg-query -W --showformat='${Status}\n' xprintidle|grep "install ok installed")
+    echo Checking for somelib: $PKG_OK
+    if [ "" == "$PKG_OK" ]; then
+      echo "No xprintidle. Setting up xprintidle."
+      sudo apt-get --force-yes --yes install xprintidle
+    fi
+
+
+
+}
 self_update
+install_packages
+# check that xprintidle is installed or install
 echo “some code. version2”
+
