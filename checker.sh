@@ -17,11 +17,11 @@ self_update() {
     cd "$SCRIPTPATH"
     git fetch
     [ -n "$(git diff --name-only "origin/$BRANCH" "$SCRIPTFILE")" ] && {
-        logger "Found a new version of me, updating myself..."
+        logger "$0 Se ha encontrado una actualización, actualizando..."
         git pull --force
         git checkout "$BRANCH"
         git pull --force
-        logger "Running the new version..."
+        logger "Ejecutando nueva version..."
         cd -                                   # return to original working dir
         exec "$SCRIPTNAME" "${ARGS[@]}"
 
@@ -61,8 +61,12 @@ get_displays() {
     done
 }
 
-# TODO: only do this the first time
-self_update
+# Update script only the first time it runs
+if [ ! -f "/tmp/checker.log" ]; then
+    self_update
+fi
+touch /tmp/checker.log
+
 check_xprintidle
 
 if [ $SCRIPTPATH != "/usr/local/bin/checker" ]; then 
@@ -97,10 +101,10 @@ else
     rm -rf /tmp/idle
 fi
 
-logger "Comprobando si han pasado $minutos minutos de inactividad."
+logger "$0 Comprobando si han pasado $minutos minutos de inactividad."
 if [[ $idletime -lt $idle ]]; then
-   logger "apagamos el ordenador"
+   logger "$0 apagamos el ordenador"
    /sbin/shutdown -P now
 else
-   logger "no apagamos aun. Faltan $((($idletime-$idle)/60000)) minutos."
+   logger "$0 no apagamos aun. Faltan $((($idletime-$idle)/60000)) minutos."
 fi
