@@ -66,7 +66,7 @@ self_update
 check_xprintidle
 
 
-if [ $SCRIPTPATH != "/usr/local/bin/checker/" ]; then 
+if [ $SCRIPTPATH != "/usr/local/bin/checker" ]; then 
    echo "Instalando script..."
    cp -r $SCRIPTPATH /usr/local/bin/
    chown root:root -R /usr/local/bin/checker # intentar averiguar el directorio "checker"
