@@ -28,7 +28,7 @@ self_update() {
 
         exit 1
     }
-    logger "Already the latest version."
+    logger "Ya es la última versión."
 }
 
 check_xprintidle() {
@@ -62,15 +62,12 @@ get_displays() {
     done
 }
 
-# Update script only the first time it runs
-if [ ! -f "/tmp/checker.log" ]; then
-    self_update
-fi
-touch /tmp/checker.log
 
 check_xprintidle
 
-# Install script and cron if is not in installation path
+# TODO: check_git
+
+# Install script and cron if we are not in installation path
 if [ $SCRIPTPATH != "/usr/local/bin/checker" ]; then 
    logger "$SCRIPTFILE Instalando script..."
    cp -r $SCRIPTPATH /usr/local/bin/
@@ -79,7 +76,15 @@ if [ $SCRIPTPATH != "/usr/local/bin/checker" ]; then
    echo "*/1 * * * *    root    /usr/local/bin/checker/$SCRIPTFILE" >> /tmp/$CRONFILE
    mv /tmp/$CRONFILE /etc/cron.d/
    chown root:root /etc/cron.d/$CRONFILE
+else
+   # Check update script
+   if [ ! -f "/tmp/checker.log" ]; then
+       self_update
+   fi
+   # Update script only the first time it runs
+   touch /tmp/checker.log
 fi
+
 
 # Empezamos el script
 get_displays
