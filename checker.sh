@@ -1,6 +1,11 @@
 #!/bin/bash
-                                               # Here I remark changes
 
+minutos=${1:-30}
+
+USER=""
+DISPLAY=""
+
+# For updating script
 SCRIPT="$(readlink -f "$0")"
 SCRIPTFILE="$(basename "$SCRIPT")"             # get name of the file (not full path)
 SCRIPTPATH="$(dirname "$SCRIPT")"
@@ -11,12 +16,6 @@ BRANCH="master"
 self_update() {
     cd "$SCRIPTPATH"
     git fetch
-
-                                               # in the next line
-                                               # 1. added double-quotes (see below)
-                                               # 2. removed grep expression so
-                                               # git-diff will check only script
-                                               # file
     [ -n "$(git diff --name-only "origin/$BRANCH" "$SCRIPTFILE")" ] && {
         echo "Found a new version of me, updating myself..."
         git pull --force
@@ -26,26 +25,80 @@ self_update() {
         cd -                                   # return to original working dir
         exec "$SCRIPTNAME" "${ARGS[@]}"
 
-        # Now exit this old instance
         exit 1
     }
     echo "Already the latest version."
 }
 
-install_packages() {
-    PKG_OK=$(dpkg-query -W --showformat='${Status}\n' xprintidle|grep "install ok installed")
-    echo Checking for somelib: $PKG_OK
-    if [ "" == "$PKG_OK" ]; then
-      echo "No xprintidle. Setting up xprintidle."
-      sudo apt-get update
-      sudo apt-get --force-yes --yes install xprintidle
-    fi
-
-
-
+check_xprintidle() {
+   if [ $(dpkg-query -W -f='${Status}' xprintidle 2>/dev/null | grep -c "ok installed") -eq 0 ];
+   then
+      apt-get install xprintidle;
+   fi
 }
-self_update
-install_packages
-# check that xprintidle is installed or install
-echo “some code. version2”
 
+get_displays() {
+    declare -A disps usrs
+    usrs=()
+    disps=()
+
+    for i in $(users);do
+        [[ $i = root ]] && continue # skip root
+        usrs[$i]=1
+    done # unique names
+
+    for u in "${!usrs[@]}"; do
+        for i in $(sudo ps e -u "$u" | sed -rn 's/.* DISPLAY=(:[0-9]*).*/\1/p');do
+            disps[$i]=$u
+        done
+    done
+
+    for d in "${!disps[@]}";do
+        USER=${disps[$d]}
+        DISPLAY=$d
+        logger "User: $USER, Display: $DISPLAY"
+        export DISPLAY=$DISPLAY
+    done
+}
+
+# TODO: only do this the first time
+self_update
+check_xprintidle
+get_displays
+
+mkdir /usr/local/bin/checker
+cp $SCRIPTPATH/ /usr/local/bin/checker/$SCRIPTFILE
+chown root:root -R /usr/local/bin/checker
+
+FILE="/etc/cron.d/$SCRIPTFILE"
+if [ ! -f $FILE ]; then
+   echo "SHELL=/bin/bash" > /tmp/$SCRIPTFILE
+   echo "*/1 * * * *    root    /usr/local/bin/checker/$SCRIPTFILE" >> /tmp/$SCRIPTFILE
+   mv /tmp/$SCRIPTFILE /etc/cron.d/
+   chown root:root /etc/cron.d/$SCRIPTFILE
+fi
+
+idletime=$((60*1000*$minutos))
+
+idle=`sudo -u $USER env DISPLAY=$DISPLAY /usr/bin/xprintidle`
+
+# This creates a date file used when no user is logged in
+if [ -z $idle ]; then
+    if [ -f /tmp/idle ]; then
+        idle=`cat /tmp/idle`
+    else
+        idle=0
+    fi
+    idle=$((idle+60000))
+    echo $idle > /tmp/idle
+else
+    rm -rf /tmp/idle
+fi
+
+logger "Comprobando si han pasado $minutos minutos de inactividad."
+if [[ $idletime -lt $idle ]]; then
+   logger "apagamos el ordenador"
+   /sbin/shutdown -P now
+else
+   logger "no apagamos aun. Faltan $((($idletime-$idle)/60000)) minutos."
+fi
