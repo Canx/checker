@@ -25,6 +25,9 @@ self_update() {
 }
 
 main() {
+   # 1.- check that script is installed in crontab as desired
+   #     we have to diff crontab lines.
+   # 2.- run the commands
    echo "Running"
 }
 
