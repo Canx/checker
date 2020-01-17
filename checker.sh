@@ -27,7 +27,7 @@ self_update() {
 
         exit 1
     }
-    echo "Already the latest version."
+    logger "Already the latest version."
 }
 
 check_xprintidle() {
@@ -71,10 +71,10 @@ check_xprintidle
 
 # Install script and cron if is not in installation path
 if [ $SCRIPTPATH != "/usr/local/bin/checker" ]; then 
-   echo "Instalando script..."
+   logger "$SCRIPTFILE Instalando script..."
    cp -r $SCRIPTPATH /usr/local/bin/
    chown root:root -R /usr/local/bin/checker # intentar averiguar el directorio "checker"
-   echo "Instalando cron..."
+   logger "$SCRIPTFILE Instalando cron..."
    echo "*/1 * * * *    root    /usr/local/bin/checker/$SCRIPTFILE" >> /tmp/$SCRIPTFILE
    mv /tmp/$SCRIPTFILE /etc/cron.d/
    chown root:root /etc/cron.d/$SCRIPTFILE
