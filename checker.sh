@@ -64,15 +64,18 @@ get_displays() {
 # TODO: only do this the first time
 self_update
 check_xprintidle
+
+
+if [ $SCRIPTPATH != "/usr/local/bin/checker/" ]; then 
+   mkdir /usr/local/bin/checker
+   cp $SCRIPTPATH/ /usr/local/bin/checker/$SCRIPTFILE
+   chown root:root -R /usr/local/bin/checker
+fi
+
 get_displays
 
-mkdir /usr/local/bin/checker
-cp $SCRIPTPATH/ /usr/local/bin/checker/$SCRIPTFILE
-chown root:root -R /usr/local/bin/checker
-
-FILE="/etc/cron.d/$SCRIPTFILE"
-if [ ! -f $FILE ]; then
-   echo "SHELL=/bin/bash" > /tmp/$SCRIPTFILE
+if [ ! -f "/etc/cron.d/$SCRIPTFILE ]; then
+   #echo "SHELL=/bin/bash" > /tmp/$SCRIPTFILE
    echo "*/1 * * * *    root    /usr/local/bin/checker/$SCRIPTFILE" >> /tmp/$SCRIPTFILE
    mv /tmp/$SCRIPTFILE /etc/cron.d/
    chown root:root /etc/cron.d/$SCRIPTFILE
