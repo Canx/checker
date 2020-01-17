@@ -17,11 +17,11 @@ self_update() {
     cd "$SCRIPTPATH"
     git fetch
     [ -n "$(git diff --name-only "origin/$BRANCH" "$SCRIPTFILE")" ] && {
-        logger "$0 Se ha encontrado una actualización, actualizando..."
+        logger "$SCRIPTFILE Se ha encontrado una actualización, actualizando..."
         git pull --force
         git checkout "$BRANCH"
         git pull --force
-        logger "Ejecutando nueva version..."
+        logger "$SCRIPTFILE Ejecutando nueva version..."
         cd -                                   # return to original working dir
         exec "$SCRIPTNAME" "${ARGS[@]}"
 
@@ -56,7 +56,7 @@ get_displays() {
     for d in "${!disps[@]}";do
         USER=${disps[$d]}
         DISPLAY=$d
-        logger "User: $USER, Display: $DISPLAY"
+        logger "$SCRIPTFILE User: $USER, Display: $DISPLAY"
         export DISPLAY=$DISPLAY
     done
 }
@@ -100,10 +100,10 @@ else
     rm -rf /tmp/idle
 fi
 
-logger "$0 Comprobando si han pasado $minutos minutos de inactividad."
+logger "$SCRIPTFILE Comprobando si han pasado $minutos minutos de inactividad."
 if [[ $idletime -lt $idle ]]; then
-   logger "$0 apagamos el ordenador"
+   logger "$SCRIPTFILE apagamos el ordenador"
    /sbin/shutdown -P now
 else
-   logger "$0 no apagamos aun. Faltan $((($idletime-$idle)/60000)) minutos."
+   logger "$SCRIPTFILE no apagamos aun. Faltan $((($idletime-$idle)/60000)) minutos."
 fi
