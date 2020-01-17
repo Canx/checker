@@ -66,6 +66,7 @@ self_update
 check_xprintidle
 
 
+echo $SCRIPTPATH
 if [ $SCRIPTPATH != "/usr/local/bin/checker" ]; then 
    echo "Instalando script..."
    cp -r $SCRIPTPATH /usr/local/bin/
