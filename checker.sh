@@ -37,6 +37,7 @@ install_packages() {
     echo Checking for somelib: $PKG_OK
     if [ "" == "$PKG_OK" ]; then
       echo "No xprintidle. Setting up xprintidle."
+      sudo apt-get update
       sudo apt-get --force-yes --yes install xprintidle
     fi
 
