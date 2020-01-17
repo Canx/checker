@@ -4,7 +4,7 @@ SCRIPT=$(readlink -f "$0")
 SCRIPTPATH=$(dirname "$SCRIPT")
 SCRIPTNAME="$0"
 ARGS="$@"
-BRANCH="Your_git_branch"
+BRANCH="master"
 
 self_update() {
     cd $SCRIPTPATH
