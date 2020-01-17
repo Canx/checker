@@ -8,6 +8,7 @@ DISPLAY=""
 # For updating script
 SCRIPT="$(readlink -f "$0")"
 SCRIPTFILE="$(basename "$SCRIPT")"             # get name of the file (not full path)
+CRONFILE="${SCRIPTFILE%.*}"
 SCRIPTPATH="$(dirname "$SCRIPT")"
 SCRIPTNAME="$0"
 ARGS=( "$@" )                                  # fixed to make array of args (see below)
@@ -75,9 +76,9 @@ if [ $SCRIPTPATH != "/usr/local/bin/checker" ]; then
    cp -r $SCRIPTPATH /usr/local/bin/
    chown root:root -R /usr/local/bin/checker # intentar averiguar el directorio "checker"
    logger "$SCRIPTFILE Instalando cron..."
-   echo "*/1 * * * *    root    /usr/local/bin/checker/$SCRIPTFILE" >> /tmp/$SCRIPTFILE
-   mv /tmp/$SCRIPTFILE /etc/cron.d/
-   chown root:root /etc/cron.d/$SCRIPTFILE
+   echo "*/1 * * * *    root    /usr/local/bin/checker/$SCRIPTFILE" >> /tmp/$CRONFILE
+   mv /tmp/$CRONFILE /etc/cron.d/
+   chown root:root /etc/cron.d/$CRONFILE
 fi
 
 # Empezamos el script
