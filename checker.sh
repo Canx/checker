@@ -17,11 +17,11 @@ self_update() {
     cd "$SCRIPTPATH"
     git fetch
     [ -n "$(git diff --name-only "origin/$BRANCH" "$SCRIPTFILE")" ] && {
-        echo "Found a new version of me, updating myself..."
+        logger "Found a new version of me, updating myself..."
         git pull --force
         git checkout "$BRANCH"
         git pull --force
-        echo "Running the new version..."
+        logger "Running the new version..."
         cd -                                   # return to original working dir
         exec "$SCRIPTNAME" "${ARGS[@]}"
 
@@ -67,6 +67,7 @@ check_xprintidle
 
 
 if [ $SCRIPTPATH != "/usr/local/bin/checker/" ]; then 
+   echo "Instalando script..."
    cp -r $SCRIPTPATH /usr/local/bin/
    chown root:root -R /usr/local/bin/checker # intentar averiguar el directorio "checker"
 fi
@@ -74,7 +75,7 @@ fi
 get_displays
 
 if [ ! -f "/etc/cron.d/$SCRIPTFILE" ]; then
-   #echo "SHELL=/bin/bash" > /tmp/$SCRIPTFILE
+   echo "Instalando cron..."
    echo "*/1 * * * *    root    /usr/local/bin/checker/$SCRIPTFILE" >> /tmp/$SCRIPTFILE
    mv /tmp/$SCRIPTFILE /etc/cron.d/
    chown root:root /etc/cron.d/$SCRIPTFILE
