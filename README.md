@@ -3,8 +3,5 @@
 ## Install
 
 ```
-cd /tmp
-git clone https://github.com/Canx/checker
-cd checker
-sudo ./checker.sh
+curl -o- https://raw.githubusercontent.com/Canx/checker/master/install.sh | bash -x
 ```
