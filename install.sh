@@ -1,3 +1,10 @@
+#!/bin/bash
+# Install git
+if [ $(dpkg-query -W -f='${Status}' git 2>/dev/null | grep -c "ok installed") -eq 0 ];
+then
+    apt-get --assume-yes install git;
+fi
+
 # Install xprintidle
 package="xprintidle"
 echo "Comprobando si $package está instalado..."
@@ -34,9 +41,14 @@ fi
 echo "$package ya está instalado."
 
 # Instalación de checker
+TEMP_DIR="git-checker"
 cd /tmp
+if [ -d "$TEMP_DIR" ]; then rm -Rf $TEMP_DIR; fi
 mkdir git-checker
 cd git-checker
 git clone https://github.com/Canx/checker
 cd checker
+
+# TODO: mover parte de instalación aquí
+echo "Instalando checker..."
 sudo ./checker.sh
