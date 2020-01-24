@@ -16,12 +16,11 @@ then
     then
         echo "El paquete $package no está en el repositorio. Instalando manualmente..."
         # install package manually
-        os_version=`lsb_release -d | cut -d " " -f 2`
+        os_version=`lsb_release -d | cut -d " " -f 2 | cut -d. -f1-2`
         arch=`uname -m`
 
         case "$os_version $arch" in
             "14.04 i686")    url="http://archive.ubuntu.com/ubuntu/pool/universe/x/xprintidle/xprintidle_0.2-9_i386.deb" ;;
-            "14.04.5 i686")    url="http://archive.ubuntu.com/ubuntu/pool/universe/x/xprintidle/xprintidle_0.2-9_i386.deb" ;;
             "16.04 amd_x64") url="http://archive.ubuntu.com/ubuntu/pool/universe/x/xprintidle/xprintidle_0.2-10_amd64.deb" ;;
             # TODO: añadir más versiones y arquitecturas cuando sea necesario
         *)
