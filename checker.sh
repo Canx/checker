@@ -1,4 +1,5 @@
 #!/bin/bash
+# Version: 0.1 
 
 minutos=${1:-30}
 
