@@ -15,33 +15,6 @@ SCRIPTNAME="$0"
 ARGS=( "$@" )                                  # fixed to make array of args (see below)
 BRANCH="master"
 
-self_update() {
-    cd "$SCRIPTPATH"
-    git fetch
-    [ -n "$(git diff --name-only "origin/$BRANCH" "$SCRIPTFILE")" ] && {
-        logger "$SCRIPTFILE Se ha encontrado una actualización, actualizando..."
-        git pull --force
-        git checkout "$BRANCH"
-        git pull --force
-        cd -                                   # return to original working dir
-    }
-    logger "Ya es la última versión."
-}
-
-check_xprintidle() {
-   if [ $(dpkg-query -W -f='${Status}' xprintidle 2>/dev/null | grep -c "ok installed") -eq 0 ];
-   then
-      apt-get --assume-yes install xprintidle;
-   fi
-}
-
-check_git() {
-   if [ $(dpkg-query -W -f='${Status}' git 2>/dev/null | grep -c "ok installed") -eq 0 ];
-   then
-      apt-get --assume-yes install git;
-   fi
-}
-
 
 get_displays() {
     declare -A disps usrs
@@ -68,25 +41,11 @@ get_displays() {
 }
 
 
-check_xprintidle
-check_git
-
-# Install script and cron if we are not in installation path
-if [ $SCRIPTPATH != "/usr/local/bin/checker" ]; then 
-   logger "$SCRIPTFILE Instalando script..."
-   cp -r $SCRIPTPATH /usr/local/bin/
-   chown root:root -R /usr/local/bin/checker
-   logger "$SCRIPTFILE Instalando cron..."
-   echo "*/1 * * * *    root    /usr/local/bin/checker/$SCRIPTFILE" >> /tmp/$CRONFILE
-   mv /tmp/$CRONFILE /etc/cron.d/
-   chown root:root /etc/cron.d/$CRONFILE
-else
-   # Check update script
-   if [ ! -f "/tmp/checker.log" ]; then
-       self_update
-       touch /tmp/checker.log
-       exit 1
-   fi
+# Check update script
+if [ ! -f "/tmp/checker.log" ]; then
+   . $SCRIPTPATH/install.sh
+   touch /tmp/checker.log
+   exit 1
 fi
 
 

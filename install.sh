@@ -1,52 +1,106 @@
 #!/bin/bash
+
+SCRIPT="$(readlink -f "$0")"
+SCRIPTFILE="$(basename "$SCRIPT")"
+SCRIPTPATH="$(dirname "$SCRIPT")"
+SCRIPTNAME="$0"
+ARGS=( "$@" ) 
+BRANCH="master"
+
 # Install git
-if [ $(dpkg-query -W -f='${Status}' git 2>/dev/null | grep -c "ok installed") -eq 0 ];
-then
-    apt-get --assume-yes install git;
-fi
+install_git() {
+    if [ $(dpkg-query -W -f='${Status}' git 2>/dev/null | grep -c "ok installed") -eq 0 ];
+    then
+        apt-get --assume-yes install git;
+    fi
+}
 
 # Install xprintidle
-package="xprintidle"
-echo "Comprobando si $package está instalado..."
-if [ $(dpkg-query -W -f='${Status}' $package 2>/dev/null | grep -c "ok installed") -eq 0 ];
-then
-    echo "No está instalado."
-    # check if we can install package
-    if [ -z $(apt-cache show $package) ];
+install_xprintidle() {
+    package="xprintidle"
+    echo "Comprobando si $package está instalado..."
+    if [ $(dpkg-query -W -f='${Status}' $package 2>/dev/null | grep -c "ok installed") -eq 0 ];
     then
-        echo "El paquete $package no está en el repositorio. Instalando manualmente..."
-        # install package manually
-        os_version=`lsb_release -d | cut -d " " -f 2 | cut -d. -f1-2`
-        arch=`uname -m`
-
-        case "$os_version $arch" in
-            "14.04 i686")    url="http://archive.ubuntu.com/ubuntu/pool/universe/x/xprintidle/xprintidle_0.2-9_i386.deb" ;;
-            "16.04 amd_x64") url="http://archive.ubuntu.com/ubuntu/pool/universe/x/xprintidle/xprintidle_0.2-10_amd64.deb" ;;
-            # TODO: añadir más versiones y arquitecturas cuando sea necesario
-        *)
-            echo "No se ha podido instalar $package en $os_version $arch. No puedo continuar..."
-            exit 1
-            ;;
-        esac
-        echo "Descargando $package manualmente para $os_version y $arch."
-        curl $url -o /tmp/$package.deb
-        sudo dpkg -i /tmp/$package.deb
-    else
-        echo "Instalando $package desde el repositorio."
-        sudo apt-get --assume-yes install $package;
+        echo "No está instalado."
+        # check if we can install package
+        if [ -z $(apt-cache show $package) ];
+        then
+            echo "El paquete $package no está en el repositorio. Instalando manualmente..."
+            # install package manually
+            os_version=`lsb_release -d | cut -d " " -f 2 | cut -d. -f1-2`
+            arch=`uname -m`
+    
+            case "$os_version $arch" in
+                "14.04 i686")    url="http://archive.ubuntu.com/ubuntu/pool/universe/x/xprintidle/xprintidle_0.2-9_i386.deb" ;;
+                "16.04 amd_x64") url="http://archive.ubuntu.com/ubuntu/pool/universe/x/xprintidle/xprintidle_0.2-10_amd64.deb" ;;
+                # TODO: añadir más versiones y arquitecturas cuando sea necesario
+            *)
+                echo "No se ha podido instalar $package en $os_version $arch. No puedo continuar..."
+                exit 1
+                ;;
+            esac
+            echo "Descargando $package manualmente para $os_version y $arch."
+            curl $url -o /tmp/$package.deb
+            sudo dpkg -i /tmp/$package.deb
+        else
+            echo "Instalando $package desde el repositorio."
+            sudo apt-get --assume-yes install $package;
+        fi
     fi
-fi
-echo "$package ya está instalado."
+    echo "$package ya está instalado."
+}
 
-# Instalación de checker
-TEMP_DIR="git-checker"
-cd /tmp
-if [ -d "$TEMP_DIR" ]; then rm -Rf $TEMP_DIR; fi
-mkdir git-checker
-cd git-checker
-git clone https://github.com/Canx/checker
-cd checker
+install_checker() {
+       echo "Instalando checker..."
+       TEMP_DIR="git-checker"
+       cd /tmp
+       if [ -d "$TEMP_DIR" ]; then rm -Rf $TEMP_DIR; fi
+       mkdir git-checker
+       cd git-checker
+       git clone https://github.com/Canx/checker
+  
+       # EN PRODUCCION 
+       cp -r checker /usr/local/bin/ 
+       # PARA PROBAR
+       #cp -r $SCRIPTPATH /usr/local/bin/
+       chown root:root -R /usr/local/bin/checker
+ 
+}
 
-# TODO: mover parte de instalación aquí
-echo "Instalando checker..."
-sudo ./checker.sh
+update_checker() {
+    cd $SCRIPTPATH
+    git fetch
+    [ -n "$(git diff --name-only "origin/$BRANCH" "$SCRIPTFILE")" ] && {
+        logger "$SCRIPTFILE Se ha encontrado una actualización, actualizando..."
+        git pull --force
+        git checkout "$BRANCH"
+        git pull --force
+        cd -                                   # return to original working dir
+    }
+    logger "Ya es la última versión."
+}
+
+install_or_update_cron() {
+    # TODO: Comprobar si existe ya el fichero
+    # TODO: Si no existe comprobar si hay que actualizarlo
+    cp $SCRIPTPATH/cron/checker /etc/cron.d/
+}
+
+install_or_update_checker() {
+    # 1. checker
+    if [ $SCRIPTPATH != "/usr/local/bin/checker" ]; then
+       install_checker
+   else
+       update_checker
+    fi
+    
+    # 2.- cron
+    install_or_update_cron
+    
+    # 3.- TODO: regitro de encencido y apagado
+}
+
+## MAIN ## 
+#install_git
+#install_xprintidle
+install_or_update_checker
