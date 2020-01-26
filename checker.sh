@@ -72,6 +72,7 @@ fi
 logger "$SCRIPTFILE Comprobando si han pasado $minutos minutos de inactividad."
 if [[ $idletime -lt $idle ]]; then
    logger "$SCRIPTFILE apagamos el ordenador"
+   . $SCRIPTPATH/log.sh "automatico"
    /sbin/shutdown -P now
 else
    logger "$SCRIPTFILE no apagamos aun. Faltan $((($idletime-$idle)/60000)) minutos."
