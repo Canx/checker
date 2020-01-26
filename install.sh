@@ -113,6 +113,8 @@ install_or_update_checker() {
     install_or_update_cron
     
     # 3.- TODO: regitro de encencido y apagado
+    # cp $SCRIPTPATH/initd/checker /etc/init.d
+    # update-rc.d checker defaults 99 1
 }
 
 ## MAIN ## 
