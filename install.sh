@@ -9,9 +9,24 @@ BRANCH="master"
 
 # Install git
 install_git() {
+    echo "Comprobando si git está instalado..."
     if [ $(dpkg-query -W -f='${Status}' git 2>/dev/null | grep -c "ok installed") -eq 0 ];
     then
+        echo "Instalando git.."
         apt-get --assume-yes install git;
+    else
+        echo "OK!"
+    fi
+}
+
+install_curl() {
+    echo "Comprobando si curl está instalado..."
+    if [ $(dpkg-query -W -f='${Status}' curl 2>/dev/null | grep -c "ok installed") -eq 0 ];
+    then
+        echo "Instalando curl.."
+        apt-get --assume-yes install curl;
+    else
+        echo "OK!"
     fi
 }
 
@@ -47,7 +62,7 @@ install_xprintidle() {
             sudo apt-get --assume-yes install $package;
         fi
     fi
-    echo "$package ya está instalado."
+    echo "OK!"
 }
 
 install_checker() {
@@ -101,6 +116,7 @@ install_or_update_checker() {
 }
 
 ## MAIN ## 
-#install_git
-#install_xprintidle
+install_git
+install_xprintidle
+install_curl
 install_or_update_checker
