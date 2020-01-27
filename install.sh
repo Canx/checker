@@ -101,6 +101,14 @@ install_or_update_cron() {
     cp $SCRIPTPATH/cron/checker /etc/cron.d/
 }
 
+install_or_update_service() {
+    cp $SCRIPTPATH/init.d/checker /etc/init.d/
+    chmod 755 /etc/init.d/checker
+    update-rc.d checker defaults 99 1
+    systemctl daemon-reload
+    systemctl start checker
+}
+
 install_or_update_checker() {
     # 1. checker
     if [ $SCRIPTPATH != "/usr/local/bin/checker" ]; then
@@ -112,12 +120,8 @@ install_or_update_checker() {
     # 2.- cron
     install_or_update_cron
     
-    # 3.- TODO: regitro de encencido y apagado
-    cp $SCRIPTPATH/init.d/checker /etc/init.d/
-    chmod 755 /etc/init.d/checker
-    update-rc.d checker defaults 99 1
-    systemctl daemon-reload
-    systemctl start checker
+    # 3.- servicio para registrar encendidos y apagados
+    install_or_update_service
 }
 
 ## MAIN ## 
