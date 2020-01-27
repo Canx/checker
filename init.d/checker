@@ -19,7 +19,7 @@ LOCKFILE="/var/lock/subsys/checker"
 
 # Logueamos el arranque
 start() {
-    . $CHECKER_DIR/log.sh "encendido"
+    $CHECKER_DIR/log.sh "encendido"
     touch $LOCKFILE
 }
 
@@ -31,12 +31,11 @@ stop() {
     if [ -f "$LOG_FILE" ]; then
         automatico=`tail -1 $LOG_FILE`
 
-        echo $automatico
         if [[ -n "${automatico/[ ]*\n/}" ]]; then
             mensaje="automatico"
         fi
     fi
-    . $CHECKER_DIR/log.sh $mensaje
+    $CHECKER_DIR/log.sh $mensaje
     rm -f $LOCKFILE
 }
 
