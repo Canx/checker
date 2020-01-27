@@ -10,6 +10,9 @@
 # Description:       Logs power on, automatic and manual shutdowns online
 ### END INIT INFO
 
+set -e
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
 CHECKER_DIR="/usr/local/bin/checker"
 LOG_FILE="/tmp/checker.log"
 LOCKFILE="/var/lock/subsys/checker"
