@@ -116,6 +116,8 @@ install_or_update_checker() {
     cp $SCRIPTPATH/init.d/checker /etc/init.d/
     chmod 755 /etc/init.d/checker
     update-rc.d checker defaults 99 1
+    systemctl daemon-reload
+    systemctl start checker
 }
 
 ## MAIN ## 
