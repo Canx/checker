@@ -19,7 +19,7 @@ LOCKFILE="/var/lock/subsys/checker"
 
 # Logueamos el arranque
 start() {
-    $CHECKER_DIR/log.sh "encendido"
+    $CHECKER_DIR/log.sh "initd_encendido"
     touch $LOCKFILE
 }
 
@@ -27,12 +27,12 @@ start() {
 stop() {
     # Si hay algún contenido en /tmp/checker.log
     # entonces es apagado automático
-    mensaje="manual"
+    mensaje="initd_manual"
     if [ -f "$LOG_FILE" ]; then
         automatico=`tail -1 $LOG_FILE`
 
         if [[ -n "${automatico/[ ]*\n/}" ]]; then
-            mensaje="automatico"
+            mensaje="initd_automatico"
         fi
     fi
     $CHECKER_DIR/log.sh $mensaje
