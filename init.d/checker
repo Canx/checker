@@ -12,10 +12,12 @@
 
 CHECKER_DIR="/usr/local/bin/checker"
 LOG_FILE="/tmp/checker.log"
+LOCKFILE="/var/lock/subsys/checker"
 
 # Logueamos el arranque
 start() {
     . $CHECKER_DIR/log.sh "encendido"
+    touch $LOCKFILE
 }
 
 # Logueamos la parada. Tenemos que ver si ha sido checker o manual
@@ -32,6 +34,7 @@ stop() {
         fi
     fi
     . $CHECKER_DIR/log.sh $mensaje
+    rm -f $LOCKFILE
 }
 
 case "$1" in
