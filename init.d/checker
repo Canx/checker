@@ -10,6 +10,7 @@
 # Description:       Logs power on, automatic and manual shutdowns online
 ### END INIT INFO
 
+. /lib/init/vars.sh
 . /lib/lsb/init-functions
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
@@ -39,7 +40,7 @@ stop() {
     fi
     $CHECKER_DIR/log.sh $mensaje
     /bin/rm -rf $PIDFILE
-    exit 3
+    exit 0
 }
 
 status() {
