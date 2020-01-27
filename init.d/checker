@@ -33,7 +33,7 @@ stop() {
     mensaje="initd_manual"
     if [ -f "$LOG_FILE" ]; then
         automatico=`tail -1 $LOG_FILE`
-        if [ -n "${automatico}/[ ]*\n/}" ]; then
+        if [[ -n "${automatico}/[ ]*\n/}" ]]; then
             mensaje="initd_automatico"
         fi
     fi
