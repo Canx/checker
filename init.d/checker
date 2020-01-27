@@ -22,6 +22,7 @@ PIDFILE="/var/run/checker.pid"
 start() {
     $CHECKER_DIR/log.sh "initd_encendido"
     touch $PIDFILE
+    exit 0
 }
 
 # Logueamos la parada. Tenemos que ver si ha sido checker o manual
@@ -38,15 +39,16 @@ stop() {
     fi
     $CHECKER_DIR/log.sh $mensaje
     /bin/rm -rf $PIDFILE
+    exit 3
 }
 
 status() {
     if [ -e $PIDFILE ]; then
         log_success_msg "Checker arrancado."
-        exit 0;
+        exit 0
     else
         log_warning_msg "Checker parado."
-        exit 3;
+        exit 3
     fi
 }
 
