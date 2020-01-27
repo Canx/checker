@@ -21,7 +21,7 @@ PIDFILE="/var/run/checker.pid"
 
 # Logueamos el arranque
 start() {
-    . $CHECKER_DIR/log.sh "initd_encendido"
+    $CHECKER_DIR/log.sh "initd_encendido"
     touch $PIDFILE
     exit 0
 }
@@ -37,7 +37,7 @@ stop() {
             mensaje="initd_automatico"
         fi
     fi
-    . $CHECKER_DIR/log.sh $mensaje
+    $CHECKER_DIR/log.sh $mensaje
     /bin/rm -rf $PIDFILE
     exit 0
 }
