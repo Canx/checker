@@ -10,17 +10,18 @@
 # Description:       Logs power on, automatic and manual shutdowns online
 ### END INIT INFO
 
-set -e
+. /lib/lsb/init-functions
+
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
 CHECKER_DIR="/usr/local/bin/checker"
 LOG_FILE="/tmp/checker.log"
-LOCKFILE="/var/lock/subsys/checker"
+PIDFILE="/var/run/checker.pid"
 
 # Logueamos el arranque
 start() {
     $CHECKER_DIR/log.sh "initd_encendido"
-    touch $LOCKFILE
+    touch $PIDFILE
 }
 
 # Logueamos la parada. Tenemos que ver si ha sido checker o manual
@@ -36,12 +37,23 @@ stop() {
         fi
     fi
     $CHECKER_DIR/log.sh $mensaje
-    rm -f $LOCKFILE
+    /bin/rm -rf $PIDFILE
+}
+
+status() {
+    if [ -e $PIDFILE ]; then
+        log_success_msg "Checker arrancado."
+        exit 0;
+    else
+        log_warning_msg "Checker parado."
+        exit 3;
+    fi
 }
 
 case "$1" in
     start) start;;
     stop) stop;;
+    status) status;;
     *)
         echo $"Usage: $0 {start|stop}"
         exit 1
