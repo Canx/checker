@@ -111,8 +111,8 @@ install_or_update_service() {
     update-rc.d checker enable
 
     # For 16.04 or uppper
-    systemctl daemon-reload
-    systemctl start checker
+    #systemctl daemon-reload
+    #systemctl start checker
 }
 
 install_or_update_checker() {
