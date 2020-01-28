@@ -106,13 +106,13 @@ install_or_update_service() {
     cp $INSTALLPATH/init.d/checker /etc/init.d/
     chmod 755 /etc/init.d/checker
 
-    # For 15.10 or lower
-    update-rc.d checker defaults 99 1
-    update-rc.d checker enable
-
-    # For 16.04 or uppper
-    #systemctl daemon-reload
-    #systemctl start checker
+    if hash systemctl 2>/dev/null; then
+        systemctl daemon-reload
+        systemctl start checker
+    else
+        update-rc.d checker defaults 99 1
+        update-rc.d checker enable
+    fi
 }
 
 install_or_update_checker() {
