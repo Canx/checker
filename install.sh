@@ -6,6 +6,7 @@ SCRIPTPATH="$(dirname "$SCRIPT")"
 SCRIPTNAME="$0"
 ARGS=( "$@" ) 
 BRANCH="master"
+INSTALLPATH="/usr/local/bin/checker"
 
 # Install git
 install_git() {
@@ -98,20 +99,25 @@ update_checker() {
 install_or_update_cron() {
     # TODO: Comprobar si existe ya el fichero
     # TODO: Si no existe comprobar si hay que actualizarlo
-    cp $SCRIPTPATH/cron/checker /etc/cron.d/
+    cp $INSTALLPATH/cron.d/checker /etc/cron.d/
 }
 
 install_or_update_service() {
-    cp $SCRIPTPATH/init.d/checker /etc/init.d/
+    cp $INSTALLPATH/init.d/checker /etc/init.d/
     chmod 755 /etc/init.d/checker
+
+    # For 15.10 or lower
     update-rc.d checker defaults 99 1
+    update-rc.d checker enable
+
+    # For 16.04 or uppper
     systemctl daemon-reload
     systemctl start checker
 }
 
 install_or_update_checker() {
     # 1. checker
-    if [ $SCRIPTPATH != "/usr/local/bin/checker" ]; then
+    if [ $SCRIPTPATH != $INSTALLPATH ]; then
        install_checker
    else
        update_checker
