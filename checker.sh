@@ -1,7 +1,7 @@
 #!/bin/bash
-# Version: 0.5
+# Version: 0.6
 
-minutos=${1:-30}
+minutos=${1:-60}
 
 USER=""
 DISPLAY=""
@@ -64,9 +64,11 @@ if [ -z $idle ]; then
     else
         idle=0
     fi
-    idle=$((idle+60000))
+    idle=$((idle+60000*5))
     echo $idle > /tmp/idle
+    logger "$SCRIPTFILE Sin usuario. Idle es $idle."
 else
+    logger "$SCRIPTFILE Con usuario. Idle es $idle."
     rm -rf /tmp/idle
 fi
 
