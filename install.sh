@@ -48,7 +48,7 @@ install_xprintidle() {
     
             case "$os_version $arch" in
                 "14.04 i686")    url="http://archive.ubuntu.com/ubuntu/pool/universe/x/xprintidle/xprintidle_0.2-9_i386.deb" ;;
-                "16.04 amd_x64") url="http://archive.ubuntu.com/ubuntu/pool/universe/x/xprintidle/xprintidle_0.2-10_amd64.deb" ;;
+                "16.04 x86_64") url="http://archive.ubuntu.com/ubuntu/pool/universe/x/xprintidle/xprintidle_0.2-10_amd64.deb" ;;
                 # TODO: añadir más versiones y arquitecturas cuando sea necesario
             *)
                 echo "No se ha podido instalar $package en $os_version $arch. No puedo continuar..."
