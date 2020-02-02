@@ -45,7 +45,7 @@ get_displays() {
 # Check update script
 if [ ! -f "/tmp/checker.log" ]; then
    . $SCRIPTPATH/install.sh
-   . $SCRIPTPATH/log.sh "encendido"
+   . $SCRIPTPATH/log.sh "encendido_cron"
    touch /tmp/checker.log
    exit 1
 fi
