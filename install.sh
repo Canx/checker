@@ -101,6 +101,7 @@ update_checker() {
 install_or_update_cron() {
     # TODO: Comprobar si existe ya el fichero
     # TODO: Si no existe comprobar si hay que actualizarlo
+    rm -rf /etc/cron.d/checker
     cp $INSTALLPATH/cron.d/checker /etc/cron.d/
 }
 
