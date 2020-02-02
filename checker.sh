@@ -3,6 +3,7 @@
 
 minutos=${1:-60}
 
+VERSION="0.6"
 USER=""
 DISPLAY=""
 
@@ -75,7 +76,7 @@ fi
 logger "$SCRIPTFILE Comprobando si han pasado $minutos minutos de inactividad."
 if [[ $idletime -lt $idle ]]; then
    logger "$SCRIPTFILE apagamos el ordenador"
-   . $SCRIPTPATH/log.sh "automatico_checker"
+   . $SCRIPTPATH/log.sh "apagado_automatico"
    echo "shutdown" >> /tmp/checker.log
    /sbin/shutdown -P now
 else

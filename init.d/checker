@@ -21,7 +21,7 @@ PIDFILE="/var/run/checker.pid"
 
 # Logueamos el arranque
 start() {
-    $CHECKER_DIR/log.sh "initd_encendido"
+    $CHECKER_DIR/log.sh "encendido_initd"
     touch $PIDFILE
     exit 0
 }
@@ -30,9 +30,9 @@ start() {
 stop() {
     # Si hay algún contenido en /tmp/checker.log
     # entonces es apagado automático
-    mensaje="initd_manual"
+    mensaje="apagado_manual_initd"
     if [ -s $LOG_FILE ]; then
-        mensaje="initd_automatico"
+        mensaje="apagado_automatico_initd"
     fi
     $CHECKER_DIR/log.sh $mensaje
     /bin/rm -rf $PIDFILE
