@@ -14,7 +14,7 @@ install_git() {
     if [ $(dpkg-query -W -f='${Status}' git 2>/dev/null | grep -c "ok installed") -eq 0 ];
     then
         echo "Instalando git.."
-        apt-get --assume-yes install git;
+        apt-get --assume-yes install git </dev/null;
     else
         echo "OK!"
     fi
@@ -25,7 +25,7 @@ install_curl() {
     if [ $(dpkg-query -W -f='${Status}' curl 2>/dev/null | grep -c "ok installed") -eq 0 ];
     then
         echo "Instalando curl.."
-        apt-get --assume-yes install curl;
+        apt-get --assume-yes install curl </dev/null;
     else
         echo "OK!"
     fi
@@ -62,7 +62,7 @@ install_xprintidle() {
             sudo dpkg -i /tmp/$package.deb
         else
             echo "Instalando $package desde el repositorio."
-            sudo apt-get --assume-yes install $package;
+            sudo apt-get --assume-yes install $package </dev/null;
         fi
     fi
     echo "OK!"
