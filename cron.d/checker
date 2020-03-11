@@ -1,1 +1,1 @@
-*/5 * * * *    root    /usr/local/bin/checker/checker.sh
+*/5 14-23 * * *    root    /usr/local/bin/checker/checker.sh
